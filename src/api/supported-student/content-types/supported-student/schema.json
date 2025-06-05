@@ -1,0 +1,52 @@
+{
+  "kind": "collectionType",
+  "collectionName": "supported_students",
+  "info": {
+    "singularName": "supported-student",
+    "pluralName": "supported-students",
+    "displayName": "Supported Student"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "name": {
+      "type": "string"
+    },
+    "achievement": {
+      "type": "text"
+    },
+    "marks": {
+      "type": "string"
+    },
+    "school": {
+      "type": "text"
+    },
+    "story": {
+      "type": "text"
+    },
+    "photo": {
+      "allowedTypes": [
+        "images"
+      ],
+      "type": "media",
+      "multiple": false
+    },
+    "supportAmount": {
+      "type": "string"
+    },
+    "supporter_name": {
+      "type": "string"
+    },
+    "supporter_role": {
+      "type": "text"
+    },
+    "supporter_photo": {
+      "allowedTypes": [
+        "images"
+      ],
+      "type": "media",
+      "multiple": false
+    }
+  }
+}
