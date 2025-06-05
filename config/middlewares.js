@@ -15,9 +15,7 @@ module.exports = [
     name: 'strapi::cors',
     config: {
       enabled: true,
-      origin: [
-        'https://demo.gahoishakti.in',        
-      ],
+      origin: ['https://demo.gahoishakti.in'],
       methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS'],
       headers: [
         'Content-Type',
