@@ -724,6 +724,54 @@ export interface ApiLoginPageLoginPage extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiMobileUserMobileUser extends Struct.CollectionTypeSchema {
+  collectionName: 'mobile_users';
+  info: {
+    description: 'Users who authenticate with mobile number and MPIN/OTP';
+    displayName: 'MobileUser';
+    pluralName: 'mobile-users';
+    singularName: 'mobile-user';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    blockUntil: Schema.Attribute.DateTime;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    isBlocked: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
+    isRegistered: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
+    lastOtp: Schema.Attribute.String & Schema.Attribute.Private;
+    lastOtpSent: Schema.Attribute.DateTime;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::mobile-user.mobile-user'
+    > &
+      Schema.Attribute.Private;
+    mobileNumber: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.Unique &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 10;
+        minLength: 10;
+      }>;
+    mpin: Schema.Attribute.String &
+      Schema.Attribute.Private &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 4;
+        minLength: 4;
+      }>;
+    name: Schema.Attribute.String;
+    otpAttempts: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
+    publishedAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiRegistrationPageRegistrationPage
   extends Struct.CollectionTypeSchema {
   collectionName: 'registration_pages';
@@ -850,6 +898,53 @@ export interface ApiSupportedStudentSupportedStudent
     supporter_name: Schema.Attribute.String;
     supporter_photo: Schema.Attribute.Media<'images'>;
     supporter_role: Schema.Attribute.Text;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiUserMpinUserMpin extends Struct.CollectionTypeSchema {
+  collectionName: 'user_mpins';
+  info: {
+    description: 'Stores user MPIN information';
+    displayName: 'UserMPIN';
+    pluralName: 'user-mpins';
+    singularName: 'user-mpin';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    blockUntil: Schema.Attribute.DateTime;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    isBlocked: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
+    lastOtp: Schema.Attribute.String & Schema.Attribute.Private;
+    lastOtpSent: Schema.Attribute.DateTime;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::user-mpin.user-mpin'
+    > &
+      Schema.Attribute.Private;
+    mobileNumber: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.Unique &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 10;
+        minLength: 10;
+      }>;
+    mpin: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.Private &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 4;
+        minLength: 4;
+      }>;
+    otpAttempts: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
+    publishedAt: Schema.Attribute.DateTime;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -1311,7 +1406,6 @@ export interface PluginUsersPermissionsUser
   };
   options: {
     draftAndPublish: false;
-    timestamps: true;
   };
   attributes: {
     blocked: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
@@ -1373,9 +1467,11 @@ declare module '@strapi/strapi' {
       'api::global.global': ApiGlobalGlobal;
       'api::latest-news.latest-news': ApiLatestNewsLatestNews;
       'api::login-page.login-page': ApiLoginPageLoginPage;
+      'api::mobile-user.mobile-user': ApiMobileUserMobileUser;
       'api::registration-page.registration-page': ApiRegistrationPageRegistrationPage;
       'api::regular-contributor.regular-contributor': ApiRegularContributorRegularContributor;
       'api::supported-student.supported-student': ApiSupportedStudentSupportedStudent;
+      'api::user-mpin.user-mpin': ApiUserMpinUserMpin;
       'plugin::content-releases.release': PluginContentReleasesRelease;
       'plugin::content-releases.release-action': PluginContentReleasesReleaseAction;
       'plugin::i18n.locale': PluginI18NLocale;
