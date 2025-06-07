@@ -15,12 +15,15 @@ module.exports = [
     name: 'strapi::cors',
     config: {
       enabled: true,
-      origin: ['https://demo.gahoishakti.in'],
+      origin: [
+        'https://demo.gahoishakti.in',
+        'https://gahoi-shakti.web.app'
+      ],
       methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS'],
       headers: [
         'Content-Type',
         'Authorization',
-        'Origin', 
+        'Origin',
         'Accept',
         'X-Requested-With'
       ],
@@ -35,6 +38,7 @@ module.exports = [
   'strapi::favicon',
   'strapi::public',
 ];
+
 
 
 
