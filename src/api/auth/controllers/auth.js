@@ -30,17 +30,16 @@ const sendWhatsAppMessage = async (to, otp) => {
         api_key: process.env.WHATSAPP_API_TOKEN,
         number: to.toString(),
         message: `Your OTP for Gahoi Shakti login is: ${otp}. Valid for 10 minutes.`,
-        route: '1', 
-        country_code: '91' 
+        route: '1',
+        country_code: '91'
       })
     });
 
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(`WPSenders API Error: ${JSON.stringify(error)}`);
+    const responseData = await response.json();
+    if (!responseData.status) {
+      throw new Error(`WPSenders API Error: ${JSON.stringify(responseData)}`);
     }
-
-    return await response.json();
+    return responseData;
   } catch (error) {
     console.error('WhatsApp send error:', error);
     throw new Error('Failed to send OTP via WhatsApp');
@@ -107,22 +106,27 @@ module.exports = {
 
   async sendWhatsAppOTP(ctx) {
     try {
+      console.log('Request body:', ctx.request.body);
       const { mobileNumber } = ctx.request.body;
+      console.log('Received mobileNumber:', mobileNumber);
 
       if (!isValidMobileNumber(mobileNumber)) {
+        console.log('Invalid mobile number:', mobileNumber);
         return ctx.badRequest('Invalid mobile number format');
       }
 
       const user = await strapi.query('plugin::users-permissions.user').findOne({
         where: { mobileNumber }
       });
+      console.log('Found user:', user);
 
       const otp = generateOTP();
+      console.log('Generated OTP:', otp);
       
       try {
-        if (process.env.NODE_ENV === 'production') {
-          await sendWhatsAppMessage(mobileNumber, otp);
-        }
+        // Remove production check and send message
+        const result = await sendWhatsAppMessage(mobileNumber, otp);
+        console.log('WhatsApp API response:', result);
 
         const userData = {
           lastOtp: hashMPIN(otp),
@@ -264,6 +268,33 @@ module.exports = {
     } catch (error) {
       console.error('Set MPIN error:', error);
       return ctx.badRequest('Error setting MPIN');
+    }
+  },
+
+  async sendDirectWhatsApp(ctx) {
+    try {
+      const { number, message } = ctx.request.body;
+      
+      const response = await fetch('https://www.wpsenders.in/api/sendMessage', {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: new URLSearchParams({
+          api_key: process.env.WHATSAPP_API_TOKEN,
+          number: number,
+          message: message,
+          route: '1',
+          country_code: '91'
+        })
+      });
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Direct WhatsApp send error:', error);
+      return ctx.badRequest(error.message);
     }
   }
 };

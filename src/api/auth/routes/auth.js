@@ -39,6 +39,14 @@ module.exports = {
       config: {
         auth: false
       }
+    },
+    {
+      method: 'POST',
+      path: '/api/send-direct-whatsapp',
+      handler: 'auth.sendDirectWhatsApp',
+      config: {
+        auth: false
+      }
     }
   ]
 }; 

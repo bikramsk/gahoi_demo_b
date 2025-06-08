@@ -6,7 +6,7 @@ module.exports = [
       contentSecurityPolicy: {
         useDefaults: true,
         directives: {
-          'connect-src': ["'self'", 'https:'],
+          'connect-src': ["'self'", 'https:', 'https://www.wpsenders.in'],
           'img-src': ["'self'", 'data:', 'blob:', 'https:'],
           'media-src': ["'self'", 'data:', 'blob:', 'https:'],
           upgradeInsecureRequests: null,
@@ -18,20 +18,8 @@ module.exports = [
     name: 'strapi::cors',
     config: {
       enabled: true,
-      origin: ['https://demo.gahoishakti.in', 'https://api.gahoishakti.in'],
-      methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS'],
-      headers: [
-        'Content-Type',
-        'Authorization',
-        'Accept',
-        'Origin',
-        'X-Requested-With',
-        'Access-Control-Allow-Headers',
-        'Access-Control-Request-Method',
-        'Access-Control-Request-Headers'
-      ],
-      credentials: true,
-      expose: ['WWW-Authenticate', 'Server-Authorization'],
+      headers: '*',
+      origin: ['https://demo.gahoishakti.in', 'http://localhost:5173', 'https://www.wpsenders.in']
     }
   },
   'strapi::poweredBy',
