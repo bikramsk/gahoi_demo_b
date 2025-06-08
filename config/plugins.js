@@ -10,19 +10,17 @@
 //   });
   
 
-module.exports = ({ env }) => ({
+module.exports = () => ({
   upload: {
     config: {
-      provider: '@strapi/provider-upload-cloudinary',
+      provider: 'local',
       providerOptions: {
-        cloud_name: env('CLOUDINARY_NAME'),
-        api_key: env('CLOUDINARY_KEY'),
-        api_secret: env('CLOUDINARY_SECRET'),
+        sizeLimit: 10000000,
       },
       actionOptions: {
-        upload: {},
-        uploadStream: {},
-        delete: {},
+        upload: {
+          optimize: false, //  Turn off auto-optimization
+        },
       },
     },
   },

@@ -907,7 +907,7 @@ export interface ApiSupportedStudentSupportedStudent
 export interface ApiUserMpinUserMpin extends Struct.CollectionTypeSchema {
   collectionName: 'user_mpins';
   info: {
-    description: 'Stores user MPIN information';
+    description: 'User MPIN and OTP management';
     displayName: 'UserMPIN';
     pluralName: 'user-mpins';
     singularName: 'user-mpin';
@@ -916,12 +916,13 @@ export interface ApiUserMpinUserMpin extends Struct.CollectionTypeSchema {
     draftAndPublish: false;
   };
   attributes: {
-    blockUntil: Schema.Attribute.DateTime;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    isBlocked: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
-    lastOtp: Schema.Attribute.String & Schema.Attribute.Private;
+    lastOtp: Schema.Attribute.String &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 64;
+      }>;
     lastOtpSent: Schema.Attribute.DateTime;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
@@ -937,13 +938,9 @@ export interface ApiUserMpinUserMpin extends Struct.CollectionTypeSchema {
         minLength: 10;
       }>;
     mpin: Schema.Attribute.String &
-      Schema.Attribute.Required &
-      Schema.Attribute.Private &
       Schema.Attribute.SetMinMaxLength<{
-        maxLength: 4;
-        minLength: 4;
+        maxLength: 64;
       }>;
-    otpAttempts: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<0>;
     publishedAt: Schema.Attribute.DateTime;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &

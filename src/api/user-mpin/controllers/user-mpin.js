@@ -4,7 +4,7 @@ const crypto = require('crypto');
 const { createCoreController } = require('@strapi/strapi').factories;
 
 const generateOTP = () => {
-  return Math.floor(100000 + Math.random() * 900000).toString();
+  return Math.floor(1000 + Math.random() * 9000).toString(); 
 };
 
 const isValidMobileNumber = (mobileNumber) => {
@@ -20,42 +20,22 @@ const hashMPIN = (mpin) => {
 };
 
 const sendWhatsAppMessage = async (to, otp) => {
-  const token = process.env.WHATSAPP_API_TOKEN;
-  const phoneNumberId = process.env.WHATSAPP_BUSINESS_PHONE_NUMBER;
+  const apiKey = "S4YKGP5ZB9Q2J8LIDNM6OACTX";
+  const url = "https://www.wpsenders.in/api/sendMessage";
   
-  if (!token || !phoneNumberId) {
-    throw new Error('WhatsApp API credentials not configured');
-  }
+  const message = `Your OTP for Gahoi Shakti login is: ${otp}. This OTP will expire in 10 minutes.`;
 
-  const url = `https://graph.facebook.com/v17.0/${phoneNumberId}/messages`;
-  
   const response = await fetch(url, {
     method: 'POST',
     headers: {
-      'Authorization': `Bearer ${token}`,
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      messaging_product: "whatsapp",
-      to: `91${to}`, // country code
-      type: "template",
-      template: {
-        name: "otp_alert",
-        language: {
-          code: "en"
-        },
-        components: [
-          {
-            type: "body",
-            parameters: [
-              {
-                type: "text",
-                text: otp
-              }
-            ]
-          }
-        ]
-      }
+      api_key: apiKey,
+      message: message,
+      number: to,
+      route: 1, // 1 for Transactional
+      country_code: 91
     })
   });
 
@@ -82,7 +62,7 @@ module.exports = createCoreController('api::user-mpin.user-mpin', ({ strapi }) =
 
       return {
         exists: !!user,
-        hasMPIN: user ? !!user.mpin : false
+        hasMpin: user ? !!user.mpin : false
       };
     } catch (error) {
       return ctx.badRequest('Error checking user status');
@@ -113,7 +93,7 @@ module.exports = createCoreController('api::user-mpin.user-mpin', ({ strapi }) =
 
       return {
         jwt: token,
-        isRegistered: true //check against your user registration status
+        isRegistered: true
       };
     } catch (error) {
       return ctx.badRequest('Error verifying MPIN');
@@ -128,15 +108,6 @@ module.exports = createCoreController('api::user-mpin.user-mpin', ({ strapi }) =
         return ctx.badRequest('Invalid mobile number format');
       }
 
-      // Check if user is blocked
-      const user = await strapi.db.query('api::user-mpin.user-mpin').findOne({
-        where: { mobileNumber }
-      });
-
-      if (user?.isBlocked && user.blockUntil && new Date(user.blockUntil) > new Date()) {
-        return ctx.badRequest('Account is temporarily blocked. Try again later.');
-      }
-
       const otp = generateOTP();
       
       try {
@@ -149,10 +120,7 @@ module.exports = createCoreController('api::user-mpin.user-mpin', ({ strapi }) =
           data: {
             mobileNumber,
             lastOtp: hashMPIN(otp),
-            lastOtpSent: new Date(),
-            otpAttempts: 0,
-            isBlocked: false,
-            blockUntil: null
+            lastOtpSent: new Date()
           }
         });
 
@@ -174,7 +142,7 @@ module.exports = createCoreController('api::user-mpin.user-mpin', ({ strapi }) =
     try {
       const { mobileNumber, otp } = ctx.request.body;
 
-      if (!isValidMobileNumber(mobileNumber) || !otp || otp.length !== 6) {
+      if (!isValidMobileNumber(mobileNumber) || !otp || otp.length !== 4) {
         return ctx.badRequest('Invalid input format');
       }
 
@@ -186,40 +154,19 @@ module.exports = createCoreController('api::user-mpin.user-mpin', ({ strapi }) =
         return ctx.badRequest('User not found');
       }
 
-      if (user.isBlocked && user.blockUntil && new Date(user.blockUntil) > new Date()) {
-        return ctx.badRequest('Account is temporarily blocked. Try again later.');
-      }
-
       if (!user.lastOtp || !user.lastOtpSent) {
         return ctx.badRequest('No OTP was sent');
       }
 
-      // Check if OTP is expired (5 minutes)
+      // Check if OTP is expired (10 minutes)
       const otpExpiry = new Date(user.lastOtpSent);
-      otpExpiry.setMinutes(otpExpiry.getMinutes() + 5);
+      otpExpiry.setMinutes(otpExpiry.getMinutes() + 10);
       
       if (new Date() > otpExpiry) {
         return ctx.badRequest('OTP has expired');
       }
 
       if (user.lastOtp !== hashMPIN(otp)) {
-        // Increment attempts
-        const attempts = (user.otpAttempts || 0) + 1;
-        const updateData = { otpAttempts: attempts };
-
-        // Block account after 5 failed attempts
-        if (attempts >= 5) {
-          const blockUntil = new Date();
-          blockUntil.setMinutes(blockUntil.getMinutes() + 30);
-          updateData.isBlocked = true;
-          updateData.blockUntil = blockUntil;
-        }
-
-        await strapi.db.query('api::user-mpin.user-mpin').update({
-          where: { id: user.id },
-          data: updateData
-        });
-
         return ctx.badRequest('Invalid OTP');
       }
 
@@ -227,10 +174,7 @@ module.exports = createCoreController('api::user-mpin.user-mpin', ({ strapi }) =
       await strapi.db.query('api::user-mpin.user-mpin').update({
         where: { id: user.id },
         data: {
-          lastOtp: null,
-          otpAttempts: 0,
-          isBlocked: false,
-          blockUntil: null
+          lastOtp: null
         }
       });
 
@@ -242,6 +186,7 @@ module.exports = createCoreController('api::user-mpin.user-mpin', ({ strapi }) =
 
       return {
         jwt: token,
+        hasMpin: !!user.mpin,
         isRegistered: !!user.mpin // Consider user registered if they have set MPIN
       };
     } catch (error) {

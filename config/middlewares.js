@@ -4,16 +4,11 @@ module.exports = [
     name: 'strapi::security',
     config: {
       contentSecurityPolicy: {
+        useDefaults: true,
         directives: {
-          'connect-src': ["'self'", 'https:'],
-          'img-src': [
-            "'self'", 
-            'data:', 
-            'blob:', 
-            'https://api.gahoishakti.in',
-            'https://demo.gahoishakti.in',
-            'https://gahoi-shakti.web.app'
-          ],
+          'connect-src': ["'self'", 'https:', 'http:'],
+          'img-src': ["'self'", 'data:', 'blob:', 'https:', 'http:'],
+          'media-src': ["'self'", 'data:', 'blob:', 'https:', 'http:'],
         },
       },
     },
@@ -23,36 +18,26 @@ module.exports = [
     config: {
       enabled: true,
       origin: [
-        'http://localhost:5173',           // Local development
-        'https://demo.gahoishakti.in',     // Demo 
-        'https://gahoi-shakti.web.app',    // Firebase hosting
-        'https://api.gahoishakti.in',      
-        'https://www.gahoishakti.in',      // Production with www
-        'https://gahoishakti.in'           // Production without www
+        'https://demo.gahoishakti.in' ,
+        'https://api.gahoishakti.in',        
+         
       ],
+      credentials: true,
       methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS'],
-      headers: [
-        'Content-Type',
-        'Authorization',
-        'Origin',
-        'Accept',
-        'X-Requested-With',
-        'Access-Control-Allow-Origin',
-        'Access-Control-Allow-Headers',
-        'Access-Control-Allow-Methods'
-      ],
-      keepHeaderOnError: true,
-      credentials: true  
-    },
+      headers: ['Content-Type', 'Authorization', 'Origin', 'Accept'],
+      expose: ['Content-Range', 'X-Content-Range', 'Authorization'],
+    }
   },
-  'strapi::logger',
   'strapi::poweredBy',
+  'strapi::logger',
   'strapi::query',
   'strapi::body',
   'strapi::session',
   'strapi::favicon',
   'strapi::public',
 ];
+
+
 
 
 // module.exports = [
