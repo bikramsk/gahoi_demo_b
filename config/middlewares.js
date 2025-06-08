@@ -6,9 +6,10 @@ module.exports = [
       contentSecurityPolicy: {
         useDefaults: true,
         directives: {
-          'connect-src': ["'self'", 'https:', 'http:'],
-          'img-src': ["'self'", 'data:', 'blob:', 'https:', 'http:'],
-          'media-src': ["'self'", 'data:', 'blob:', 'https:', 'http:'],
+          'connect-src': ["'self'", 'https:'],
+          'img-src': ["'self'", 'data:', 'blob:', 'https:'],
+          'media-src': ["'self'", 'data:', 'blob:', 'https:'],
+          upgradeInsecureRequests: null,
         },
       },
     },
@@ -17,15 +18,11 @@ module.exports = [
     name: 'strapi::cors',
     config: {
       enabled: true,
-      origin: [
-        'https://demo.gahoishakti.in' ,
-        'https://api.gahoishakti.in',        
-         
-      ],
-      credentials: true,
+      headers: '*',
+      origin: ['https://demo.gahoishakti.in', 'https://api.gahoishakti.in'],
       methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS'],
-      headers: ['Content-Type', 'Authorization', 'Origin', 'Accept'],
-      expose: ['Content-Range', 'X-Content-Range', 'Authorization'],
+      credentials: true,
+      expose: ['WWW-Authenticate', 'Server-Authorization'],
     }
   },
   'strapi::poweredBy',
@@ -36,9 +33,6 @@ module.exports = [
   'strapi::favicon',
   'strapi::public',
 ];
-
-
-
 
 // module.exports = [
 //   "strapi::errors",
