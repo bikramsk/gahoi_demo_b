@@ -20,7 +20,6 @@ const hashMPIN = (mpin) => {
 
 const sendWhatsAppMessage = async (to, otp) => {
   try {
-    // First try WPSenders API
     const response = await fetch('https://www.wpsenders.in/api/sendMessage', {
       method: 'POST',
       headers: {
@@ -29,67 +28,22 @@ const sendWhatsAppMessage = async (to, otp) => {
       },
       body: new URLSearchParams({
         api_key: process.env.WHATSAPP_API_TOKEN,
-        number: to,
+        number: to.toString(),
         message: `Your OTP for Gahoi Shakti login is: ${otp}. Valid for 10 minutes.`,
-        route: '1',
-        country_code: '91'
-      })
-    });
-
-    if (!response.ok) {
-      throw new Error('WPSenders API failed');
-    }
-
-    return await response.json();
-  } catch (wpError) {
-    console.log('WPSenders failed, trying WhatsApp Business API');
-    
-    // Fallback to WhatsApp Business API
-    const token = process.env.WHATSAPP_API_TOKEN;
-    const phoneNumberId = process.env.WHATSAPP_BUSINESS_PHONE_NUMBER;
-    
-    if (!token || !phoneNumberId) {
-      throw new Error('WhatsApp API credentials not configured');
-    }
-
-    const url = `https://graph.facebook.com/v17.0/${phoneNumberId}/messages`;
-    
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        messaging_product: "whatsapp",
-        to: `91${to}`,
-        type: "template",
-        template: {
-          name: "otp_alert",
-          language: {
-            code: "en"
-          },
-          components: [
-            {
-              type: "body",
-              parameters: [
-                {
-                  type: "text",
-                  text: otp
-                }
-              ]
-            }
-          ]
-        }
+        route: '1', 
+        country_code: '91' 
       })
     });
 
     if (!response.ok) {
       const error = await response.json();
-      throw new Error(`WhatsApp API Error: ${JSON.stringify(error)}`);
+      throw new Error(`WPSenders API Error: ${JSON.stringify(error)}`);
     }
 
     return await response.json();
+  } catch (error) {
+    console.error('WhatsApp send error:', error);
+    throw new Error('Failed to send OTP via WhatsApp');
   }
 };
 
