@@ -20,6 +20,13 @@ const hashMPIN = (mpin) => {
 
 const sendWhatsAppMessage = async (to, otp) => {
   try {
+    console.log('Attempting to send WhatsApp message to:', to);
+    console.log('API Key:', process.env.WHATSAPP_API_TOKEN ? 'Present' : 'Missing');
+
+    if (!process.env.WHATSAPP_API_TOKEN) {
+      throw new Error('WhatsApp API Token not configured');
+    }
+
     const response = await fetch('https://www.wpsenders.in/api/sendMessage', {
       method: 'POST',
       headers: {
@@ -36,13 +43,15 @@ const sendWhatsAppMessage = async (to, otp) => {
     });
 
     const responseData = await response.json();
+    console.log('WPSenders API Response:', responseData);
+
     if (!responseData.status) {
-      throw new Error(`WPSenders API Error: ${JSON.stringify(responseData)}`);
+      throw new Error(responseData.message || 'WPSenders API Error');
     }
     return responseData;
   } catch (error) {
-    console.error('WhatsApp send error:', error);
-    throw new Error('Failed to send OTP via WhatsApp');
+    console.error('WhatsApp send error details:', error);
+    throw error;
   }
 };
 
