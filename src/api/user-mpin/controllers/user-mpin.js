@@ -26,7 +26,11 @@ const sendWhatsAppMessage = async (to, otp) => {
   const message = `Your OTP for Gahoi Shakti login is: ${otp}. This OTP will expire in 10 minutes.`;
 
   try {
-    console.log('Attempting to send WhatsApp message to:', to);
+    console.log('WhatsApp API Request:', {
+      url,
+      number: to,
+      hasApiKey: !!apiKey
+    });
     
     const response = await fetch(url, {
       method: 'POST',
@@ -43,18 +47,25 @@ const sendWhatsAppMessage = async (to, otp) => {
       })
     });
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error('WhatsApp API error response:', errorText);
-      throw new Error(`WhatsApp API returned status ${response.status}: ${errorText}`);
+    console.log('WhatsApp API Response Status:', response.status);
+    const responseText = await response.text();
+    console.log('WhatsApp API Raw Response:', responseText);
+
+    let responseData;
+    try {
+      responseData = JSON.parse(responseText);
+      console.log('WhatsApp API Parsed Response:', responseData);
+    } catch (parseError) {
+      console.error('Failed to parse WhatsApp API response:', parseError);
+      throw new Error(`Invalid response from WhatsApp API: ${responseText}`);
     }
 
-    const responseData = await response.json();
-    console.log('WPSenders API Response:', responseData);
+    if (!response.ok) {
+      throw new Error(`WhatsApp API error (${response.status}): ${JSON.stringify(responseData)}`);
+    }
 
     if (!responseData.status) {
-      console.error('WhatsApp API error:', responseData);
-      throw new Error(responseData.message || 'WPSenders API Error');
+      throw new Error(`WhatsApp send failed: ${responseData.message || 'Unknown error'}`);
     }
 
     return responseData;
@@ -120,26 +131,40 @@ module.exports = createCoreController('api::user-mpin.user-mpin', ({ strapi }) =
   async sendWhatsAppOTP(ctx) {
     try {
       const { mobileNumber } = ctx.request.body;
+      console.log('Received OTP request for mobile:', mobileNumber);
 
       if (!isValidMobileNumber(mobileNumber)) {
         return ctx.badRequest('Invalid mobile number format');
       }
 
       const otp = generateOTP();
+      console.log('Generated OTP:', otp);
       
       try {
-        if (process.env.NODE_ENV === 'production') {
-          await sendWhatsAppMessage(mobileNumber, otp);
-        }
+        const result = await sendWhatsAppMessage(mobileNumber, otp);
+        console.log('WhatsApp send result:', result);
         
-        await strapi.db.query('api::user-mpin.user-mpin').upsert({
-          where: { mobileNumber },
-          data: {
-            mobileNumber,
-            lastOtp: hashMPIN(otp),
-            lastOtpSent: new Date()
-          }
+        // Check if user exists
+        const existingUser = await strapi.db.query('api::user-mpin.user-mpin').findOne({
+          where: { mobileNumber }
         });
+
+        const userData = {
+          mobileNumber,
+          lastOtp: hashMPIN(otp),
+          lastOtpSent: new Date()
+        };
+
+        if (!existingUser) {
+          await strapi.db.query('api::user-mpin.user-mpin').create({
+            data: userData
+          });
+        } else {
+          await strapi.db.query('api::user-mpin.user-mpin').update({
+            where: { id: existingUser.id },
+            data: userData
+          });
+        }
 
         return {
           success: true,
@@ -148,10 +173,11 @@ module.exports = createCoreController('api::user-mpin.user-mpin', ({ strapi }) =
         };
       } catch (error) {
         console.error('WhatsApp API Error:', error);
-        return ctx.badRequest('Failed to send OTP via WhatsApp');
+        return ctx.badRequest(`Failed to send OTP: ${error.message}`);
       }
     } catch (error) {
-      return ctx.badRequest('Error sending OTP');
+      console.error('Send OTP error:', error);
+      return ctx.badRequest(`Error in OTP process: ${error.message}`);
     }
   },
 
