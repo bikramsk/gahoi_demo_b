@@ -9,6 +9,7 @@ module.exports = ({ env }) => ({
       'Authorization',
       'Origin',
       'Accept',
+      'authorization',
       'Access-Control-Allow-Origin',
       'Access-Control-Allow-Credentials',
       'Access-Control-Allow-Headers',

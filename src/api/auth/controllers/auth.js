@@ -27,6 +27,10 @@ const sendWhatsAppMessage = async (to, otp) => {
       throw new Error('WhatsApp API Token not configured');
     }
 
+    if (!process.env.WHATSAPP_BUSINESS_PHONE_NUMBER) {
+      throw new Error('WhatsApp Business Phone Number not configured');
+    }
+
     const response = await fetch('https://www.wpsenders.in/api/sendMessage', {
       method: 'POST',
       headers: {
@@ -38,16 +42,25 @@ const sendWhatsAppMessage = async (to, otp) => {
         number: to.toString(),
         message: `Your OTP for Gahoi Shakti login is: ${otp}. Valid for 10 minutes.`,
         route: '1',
-        country_code: '91'
+        country_code: '91',
+        from: process.env.WHATSAPP_BUSINESS_PHONE_NUMBER
       })
     });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('WhatsApp API error response:', errorText);
+      throw new Error(`WhatsApp API returned status ${response.status}: ${errorText}`);
+    }
 
     const responseData = await response.json();
     console.log('WPSenders API Response:', responseData);
 
     if (!responseData.status) {
+      console.error('WhatsApp API error:', responseData);
       throw new Error(responseData.message || 'WPSenders API Error');
     }
+
     return responseData;
   } catch (error) {
     console.error('WhatsApp send error details:', error);
