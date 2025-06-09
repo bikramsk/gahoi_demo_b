@@ -25,26 +25,43 @@ const sendWhatsAppMessage = async (to, otp) => {
   
   const message = `Your OTP for Gahoi Shakti login is: ${otp}. This OTP will expire in 10 minutes.`;
 
-  const response = await fetch(url, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      api_key: apiKey,
-      message: message,
-      number: to,
-      route: 1, // 1 for Transactional
-      country_code: 91
-    })
-  });
+  try {
+    console.log('Attempting to send WhatsApp message to:', to);
+    
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      body: new URLSearchParams({
+        api_key: apiKey,
+        message: message,
+        number: to,
+        route: '1',
+        country_code: '91'
+      })
+    });
 
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(`WhatsApp API Error: ${JSON.stringify(error)}`);
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('WhatsApp API error response:', errorText);
+      throw new Error(`WhatsApp API returned status ${response.status}: ${errorText}`);
+    }
+
+    const responseData = await response.json();
+    console.log('WPSenders API Response:', responseData);
+
+    if (!responseData.status) {
+      console.error('WhatsApp API error:', responseData);
+      throw new Error(responseData.message || 'WPSenders API Error');
+    }
+
+    return responseData;
+  } catch (error) {
+    console.error('WhatsApp send error details:', error);
+    throw error;
   }
-
-  return await response.json();
 };
 
 module.exports = createCoreController('api::user-mpin.user-mpin', ({ strapi }) => ({
