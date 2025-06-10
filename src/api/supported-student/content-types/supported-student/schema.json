@@ -4,7 +4,8 @@
   "info": {
     "singularName": "supported-student",
     "pluralName": "supported-students",
-    "displayName": "Supported Student"
+    "displayName": "Supported Student",
+    "description": ""
   },
   "options": {
     "draftAndPublish": true
@@ -26,27 +27,12 @@
       "type": "text"
     },
     "photo": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
       "allowedTypes": [
         "images"
-      ],
-      "type": "media",
-      "multiple": false
-    },
-    "supportAmount": {
-      "type": "string"
-    },
-    "supporter_name": {
-      "type": "string"
-    },
-    "supporter_role": {
-      "type": "text"
-    },
-    "supporter_photo": {
-      "allowedTypes": [
-        "images"
-      ],
-      "type": "media",
-      "multiple": false
+      ]
     }
   }
 }
