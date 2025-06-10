@@ -47,7 +47,7 @@
       "repeatable": false,
       "component": "layout.your-suggestion"
     },
-    "registration_code": {
+    "gahoi_code": {
       "type": "string",
       "unique": true,
       "required": true
