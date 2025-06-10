@@ -3,7 +3,7 @@
 const crypto = require('crypto');
 
 const generateOTP = () => {
-  return Math.floor(1000 + Math.random() * 9000).toString(); // Changed to 4 digits
+  return Math.floor(1000 + Math.random() * 9000).toString(); 
 };
 
 const isValidMobileNumber = (mobileNumber) => {
@@ -40,7 +40,7 @@ const sendWhatsAppMessage = async (to, otp) => {
       body: new URLSearchParams({
         api_key: process.env.WHATSAPP_API_TOKEN,
         number: to.toString(),
-        message: `Your OTP for Gahoi Shakti login is: ${otp}. Valid for 10 minutes.`,
+        message: `Your OTP for Gahoi Shakti login is: ${otp}.`,
         route: '1',
         country_code: '91',
         from: process.env.WHATSAPP_BUSINESS_PHONE_NUMBER
