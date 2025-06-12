@@ -31,7 +31,7 @@ const sendWhatsAppMessage = async (to, otp) => {
       throw new Error('WhatsApp Business Phone Number not configured');
     }
 
-    const response = await fetch('https://www.wpsenders.in/api/sendMessage', {
+    const response = await fetch('https://www.wpsenders.in/api/sendRTMessage', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
