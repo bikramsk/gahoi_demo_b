@@ -13,20 +13,24 @@ module.exports = {
       path: '/registration-pages',
       handler: 'registration-page.find',
       config: {
-        auth: true,
+        auth: {
+          scope: ['api::registration-page.find']
+        },
         policies: [],
-        middlewares: [],
-      },
+        middlewares: []
+      }
     },
     {
       method: 'GET',
       path: '/registration-pages/:id',
       handler: 'registration-page.findOne',
       config: {
-        auth: true,
+        auth: {
+          scope: ['api::registration-page.findOne']
+        },
         policies: [],
-        middlewares: [],
-      },
+        middlewares: []
+      }
     }
   ]
 };

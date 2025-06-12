@@ -12,17 +12,15 @@ module.exports = [
           upgradeInsecureRequests: null,
         },
       },
-      jwtSecret: process.env.JWT_SECRET,
     },
   },
   {
     name: 'strapi::cors',
     config: {
-      enabled: true,
-      headers: ['Content-Type', 'Authorization', 'Origin', 'Accept'],
       origin: ['http://localhost:5173', 'https://demo.gahoishakti.in', 'https://api.gahoishakti.in'],
       methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS'],
-      credentials: true,
+      headers: ['Content-Type', 'Authorization', 'Origin', 'Accept'],
+      credentials: true
     }
   },
   'strapi::poweredBy',
