@@ -1,10 +1,10 @@
 module.exports = {
-  async sendSMS(ctx) {
+  async send(ctx) {
     try {
       const { message, number } = ctx.request.body;
 
       const formData = new URLSearchParams();
-      formData.append('api_key', 'S4YKGP5ZB9Q2J8LIDNM6OACTX'); 
+      formData.append('api_key', process.env.SMS_API_KEY);
       formData.append('message', message);
       formData.append('number', number);
       formData.append('route', '1');
@@ -18,15 +18,12 @@ module.exports = {
       });
 
       const data = await response.json();
+      return { data };
       
-      if (!response.ok) {
-        throw new Error(data.message || 'Failed to send SMS');
-      }
-
-      return data;
     } catch (error) {
-      console.error('SMS API Error:', error.message);
-      ctx.throw(500, error.message);
+      console.error('SMS API Error:', error);
+      ctx.body = { error: error.message };
+      ctx.status = 500;
     }
   }
 };

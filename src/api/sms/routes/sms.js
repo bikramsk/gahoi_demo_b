@@ -2,11 +2,10 @@ module.exports = {
   routes: [
     {
       method: 'POST',
-      path: '/api/send-sms',
-      handler: 'sms.sendSMS',
+      path: '/send-sms',  
       config: {
-        policies: [],
-        auth: false
+        auth: false,
+        policies: []
       }
     }
   ]
