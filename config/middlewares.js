@@ -1,4 +1,3 @@
-
 module.exports = [
   'strapi::errors',
   {
@@ -13,15 +12,25 @@ module.exports = [
           upgradeInsecureRequests: null,
         },
       },
+      frameguard: true,
+      hsts: {
+        maxAge: 31536000,
+        includeSubDomains: true,
+      },
+      xssFilter: true,
+      poweredBy: false,
     },
   },
   {
     name: 'strapi::cors',
     config: {
       enabled: true,
-      headers: ['Content-Type', 'Authorization', 'Origin', 'Accept', 'authorization'],
-      origin: ['https://demo.gahoishakti.in', 'http://localhost:5173']
-    }
+      origin: process.env.CORS_ORIGIN.split(','),
+      methods: process.env.CORS_METHODS.split(','),
+      headers: process.env.CORS_HEADERS.split(','),
+      keepHeaderOnError: true,
+      credentials: true,
+    },
   },
   'strapi::poweredBy',
   'strapi::logger',
@@ -31,6 +40,40 @@ module.exports = [
   'strapi::favicon',
   'strapi::public',
 ];
+
+
+// module.exports = [
+//   'strapi::errors',
+//   {
+//     name: 'strapi::security',
+//     config: {
+//       contentSecurityPolicy: {
+//         useDefaults: true,
+//         directives: {
+//           'connect-src': ["'self'", 'https:'],
+//           'img-src': ["'self'", 'data:', 'blob:', 'https:'],
+//           'media-src': ["'self'", 'data:', 'blob:', 'https:'],
+//           upgradeInsecureRequests: null,
+//         },
+//       },
+//     },
+//   },
+//   {
+//     name: 'strapi::cors',
+//     config: {
+//       enabled: true,
+//       headers: ['Content-Type', 'Authorization', 'Origin', 'Accept', 'authorization'],
+//       origin: ['https://demo.gahoishakti.in', 'http://localhost:5173']
+//     }
+//   },
+//   'strapi::poweredBy',
+//   'strapi::logger',
+//   'strapi::query',
+//   'strapi::body',
+//   'strapi::session',
+//   'strapi::favicon',
+//   'strapi::public',
+// ];
 
 
 
