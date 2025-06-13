@@ -3,9 +3,9 @@ module.exports = {
     {
       method: 'POST',
       path: '/whatsapp/send',
-      handler: 'whatsapp.sendMessage',
+      handler: 'whatsapp.sendMessage',  
       config: {
-        auth: false, 
+        auth: false,
       },
     },
   ],
