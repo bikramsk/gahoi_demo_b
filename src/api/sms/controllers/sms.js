@@ -1,10 +1,12 @@
-module.exports = {
+'use strict';
+
+module.exports = ({strapi}) => ({
   async send(ctx) {
     try {
       const { message, number } = ctx.request.body;
 
       const formData = new URLSearchParams();
-      formData.append('api_key', process.env.SMS_API_KEY);
+     formData.append('api_key', process.env.SMS_API_KEY);
       formData.append('message', message);
       formData.append('number', number);
       formData.append('route', '1');
@@ -18,12 +20,13 @@ module.exports = {
       });
 
       const data = await response.json();
-      return { data };
       
+      ctx.body = data;
     } catch (error) {
-      console.error('SMS API Error:', error);
       ctx.body = { error: error.message };
       ctx.status = 500;
     }
   }
-};
+});
+
+  // formData.append('api_key', process.env.SMS_API_KEY);
