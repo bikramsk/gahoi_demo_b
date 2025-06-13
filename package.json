@@ -25,7 +25,7 @@
     "export-import-kkm": "^1.1.1",
     "fs-extra": "^10.0.0",
     "mime-types": "^2.1.27",
-    "node-fetch": "^3.3.2",
+    "node-fetch": "^2.7.0",
     "pg": "^8.14.1",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
