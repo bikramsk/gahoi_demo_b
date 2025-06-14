@@ -12,7 +12,7 @@ const isValidMPIN = (mpin) => /^[0-9]{4}$/.test(mpin);
 const hashMPIN = (mpin) => crypto.createHash('sha256').update(mpin).digest('hex');
 
 const sendWhatsAppMessage = async (to, otp) => {
-  const apiKey = "S4YKGP5ZB9Q2J8LIDNM6OACTX";
+  const apiKey = "HVW5LEKQ81BPR3SJU6F7TCMYZ";
   const url = "https://www.wpsenders.in/api/sendRTMessage";
   const message = `Your OTP for Gahoi Shakti login is: ${otp}. This OTP will expire in 10 minutes.`;
 
