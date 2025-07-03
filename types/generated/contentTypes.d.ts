@@ -590,6 +590,81 @@ export interface ApiCowsevaCowseva extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiGahoiSammelanGahoiSammelan
+  extends Struct.CollectionTypeSchema {
+  collectionName: 'gahoi_sammelans';
+  info: {
+    description: 'Stores Gahoi Sammelan registration form submissions';
+    displayName: 'Gahoi Sammelan';
+    pluralName: 'gahoi-sammelans';
+    singularName: 'gahoi-sammelan';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    aadharCard: Schema.Attribute.Media<'images' | 'files'>;
+    aankna: Schema.Attribute.String;
+    acceptChildrenPartner: Schema.Attribute.Boolean;
+    agePreference: Schema.Attribute.String;
+    annualIncome: Schema.Attribute.String;
+    birthDate: Schema.Attribute.Date & Schema.Attribute.Required;
+    birthPlace: Schema.Attribute.String;
+    birthTime: Schema.Attribute.Time;
+    childrenCount: Schema.Attribute.Integer;
+    childrenDetails: Schema.Attribute.Text;
+    cityPreference: Schema.Attribute.String;
+    color: Schema.Attribute.String;
+    company: Schema.Attribute.String;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    currentAddress: Schema.Attribute.Text & Schema.Attribute.Required;
+    currentStatus: Schema.Attribute.String;
+    divorceDeath: Schema.Attribute.Media<'images' | 'files'>;
+    education: Schema.Attribute.Enumeration<
+      ['postGraduate', 'graduate', 'diploma', 'class12', 'class10', 'other']
+    >;
+    educationPreference: Schema.Attribute.String;
+    endReason: Schema.Attribute.String;
+    fatherName: Schema.Attribute.String;
+    fullSizePhoto: Schema.Attribute.Media<'images'>;
+    gan: Schema.Attribute.String;
+    gender: Schema.Attribute.Enumeration<['male', 'female']> &
+      Schema.Attribute.Required;
+    gotra: Schema.Attribute.String;
+    height: Schema.Attribute.String;
+    kundaliFile: Schema.Attribute.Media<'images' | 'files'>;
+    kundliAvailable: Schema.Attribute.Boolean;
+    kundliMatching: Schema.Attribute.Boolean;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::gahoi-sammelan.gahoi-sammelan'
+    > &
+      Schema.Attribute.Private;
+    mama: Schema.Attribute.String;
+    marriageDate: Schema.Attribute.Date;
+    marriageEndDate: Schema.Attribute.Date;
+    mobile: Schema.Attribute.String & Schema.Attribute.Required;
+    motherName: Schema.Attribute.String;
+    name: Schema.Attribute.String & Schema.Attribute.Required;
+    nationality: Schema.Attribute.String;
+    occupation: Schema.Attribute.String;
+    partnerType: Schema.Attribute.Enumeration<
+      ['business', 'service', 'housewife', 'any']
+    >;
+    position: Schema.Attribute.String;
+    previousSpouseName: Schema.Attribute.String;
+    publishedAt: Schema.Attribute.DateTime;
+    selectedDocuments: Schema.Attribute.JSON;
+    siblings: Schema.Attribute.Text;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiGalleryEventGalleryEvent
   extends Struct.CollectionTypeSchema {
   collectionName: 'gallery_events';
@@ -827,6 +902,7 @@ export interface ApiRegistrationPageRegistrationPage
       false
     >;
     child_name: Schema.Attribute.Component<'layout.child-details', true>;
+    consider_second_marriage: Schema.Attribute.Boolean;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -840,8 +916,13 @@ export interface ApiRegistrationPageRegistrationPage
       'api::registration-page.registration-page'
     > &
       Schema.Attribute.Private;
+    marital_status: Schema.Attribute.String;
     personal_information: Schema.Attribute.Component<
       'layout.personal-information',
+      false
+    >;
+    previous_marriage_info: Schema.Attribute.Component<
+      'layout.previous-marriage-info',
       false
     >;
     publishedAt: Schema.Attribute.DateTime;
@@ -1589,6 +1670,7 @@ declare module '@strapi/strapi' {
       'api::banner-image.banner-image': ApiBannerImageBannerImage;
       'api::contact.contact': ApiContactContact;
       'api::cowseva.cowseva': ApiCowsevaCowseva;
+      'api::gahoi-sammelan.gahoi-sammelan': ApiGahoiSammelanGahoiSammelan;
       'api::gallery-event.gallery-event': ApiGalleryEventGalleryEvent;
       'api::global.global': ApiGlobalGlobal;
       'api::latest-news.latest-news': ApiLatestNewsLatestNews;
