@@ -1,14 +1,3 @@
-// 'use strict';
-
-// /**
-//  * registration-page controller
-//  */
-
-// const { createCoreController } = require('@strapi/strapi').factories;
-
-// module.exports = createCoreController('api::registration-page.registration-page');
-
-
 'use strict';
 
 /**
@@ -23,7 +12,7 @@ module.exports = createCoreController('api::registration-page.registration-page'
     const response = await super.create(ctx);
 
     // Get the mobile number from the request body
-    const mobileNumber = ctx.request.body.data?.mobileNumber;
+    const mobileNumber = ctx.request.body.data?.personal_information?.mobile_number;
 
     if (mobileNumber) {
       // Set isRegistered: true for this user
