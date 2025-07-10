@@ -365,6 +365,7 @@ export interface LayoutPersonalInformation extends Struct.ComponentSchema {
       Schema.Attribute.Required;
     mobile_number: Schema.Attribute.BigInteger &
       Schema.Attribute.Required &
+      Schema.Attribute.Unique &
       Schema.Attribute.SetMinMax<
         {
           max: '10';
@@ -372,7 +373,6 @@ export interface LayoutPersonalInformation extends Struct.ComponentSchema {
         string
       >;
     nationality: Schema.Attribute.Enumeration<['Indian', 'Non-Indian']>;
-    village: Schema.Attribute.String;
   };
 }
 
@@ -738,23 +738,9 @@ export interface LayoutSiblingDetails extends Struct.ComponentSchema {
   };
   attributes: {
     age: Schema.Attribute.Integer;
-    education: Schema.Attribute.Enumeration<
-      [
-        'Primary',
-        'Secondary',
-        'Higher Secondary',
-        'Graduate',
-        'Post Graduate',
-        'Other',
-      ]
-    >;
     gender: Schema.Attribute.Enumeration<['Male', 'Female']>;
-    is_dependent: Schema.Attribute.Boolean;
     marital_status: Schema.Attribute.Enumeration<
       ['Married', 'Unmarried', 'Widow/Widower', 'Divorced']
-    >;
-    occupation: Schema.Attribute.Enumeration<
-      ['Student', 'Employed', 'Self-Employed', 'Business', 'Homemaker', 'Other']
     >;
     phone_number: Schema.Attribute.String;
     sibling_name: Schema.Attribute.String;
