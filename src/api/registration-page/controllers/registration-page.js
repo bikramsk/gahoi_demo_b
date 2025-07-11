@@ -11,15 +11,18 @@ module.exports = createCoreController('api::registration-page.registration-page'
         return ctx.badRequest('Mobile number is required');
       }
 
+      // Normalize mobile number - remove +91 if present
+      const normalizedMobile = mobileNumber.replace(/^\+91/, '');
+
       // Check if this number exists in any family member records
       const familyMemberRegistration = await strapi.db.query('api::registration-page.registration-page').findOne({
         where: {
           $or: [
-            { 'family_details.father_mobile': mobileNumber },
-            { 'family_details.mother_mobile': mobileNumber },
-            { 'family_details.spouse_mobile': mobileNumber },
-            { 'family_details.siblingDetails': { $elemMatch: { phone_number: mobileNumber } } },
-            { 'family_details.childrenDetails': { $elemMatch: { phone_number: mobileNumber } } }
+            { 'family_details.father_mobile': normalizedMobile },
+            { 'family_details.mother_mobile': normalizedMobile },
+            { 'family_details.spouse_mobile': normalizedMobile },
+            { 'family_details.siblingDetails': { $elemMatch: { phone_number: normalizedMobile } } },
+            { 'family_details.childrenDetails': { $elemMatch: { phone_number: normalizedMobile } } }
           ]
         },
         populate: ['family_details', 'personal_information']
@@ -36,8 +39,10 @@ module.exports = createCoreController('api::registration-page.registration-page'
       }
 
       return {
+        data: null,
         meta: {
-          isExistingFamilyMember: false
+          isExistingFamilyMember: false,
+          message: 'Number not found in any family profiles'
         }
       };
 
