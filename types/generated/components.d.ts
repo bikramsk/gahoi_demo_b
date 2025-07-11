@@ -402,6 +402,7 @@ export interface LayoutRegionalInformation extends Struct.ComponentSchema {
     displayName: 'Regional Information';
   };
   attributes: {
+    District: Schema.Attribute.String;
     gram_panchayat: Schema.Attribute.String & Schema.Attribute.Required;
     local_body: Schema.Attribute.String & Schema.Attribute.Required;
     LocalPanchayat: Schema.Attribute.Enumeration<
@@ -511,14 +512,43 @@ export interface LayoutRegionalInformation extends Struct.ComponentSchema {
     State: Schema.Attribute.Enumeration<
       [
         '',
+        'A & N Islands',
+        'Andhra Pradesh',
+        'Arunachal Pradesh',
+        'Assam',
         'Bihar',
-        'Chhatisgarh',
-        'Delhi',
+        'Chandigarh',
+        'Chhattisgarh',
+        'D & N Haveli',
+        'Daman & Diu',
+        'Goa',
         'Gujarat',
+        'Haryana',
+        'Himachal Pradesh',
+        'Jammu & Kashmir',
+        'Jharkhand',
+        'Karnataka',
+        'Kerala',
         'Madhya Pradesh',
         'Maharashtra',
+        'Manipur',
+        'Meghalaya',
+        'Mizoram',
+        'Nagaland',
+        'Delhi',
+        'Odisha',
+        'Orissa',
+        'Puducherry',
+        'Punjab',
         'Rajasthan',
+        'Sikkim',
+        'Tamil Nadu',
+        'Telangana',
+        'Telengana',
+        'Tripura',
         'Uttar Pradesh',
+        'Uttarakhand',
+        'West Bengal',
       ]
     >;
     SubLocalPanchayat: Schema.Attribute.Enumeration<
