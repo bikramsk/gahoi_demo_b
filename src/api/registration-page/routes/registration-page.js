@@ -6,4 +6,17 @@
 
 const { createCoreRouter } = require('@strapi/strapi').factories;
 
-module.exports = createCoreRouter('api::registration-page.registration-page');
+module.exports = {
+  routes: [
+    {
+      method: 'GET',
+      path: '/registration-pages/check-family-member/:mobileNumber',
+      handler: 'registration-page.checkFamilyMember',
+      config: {
+        auth: false,
+        policies: [],
+        middlewares: [],
+      },
+    },
+  ],
+};
