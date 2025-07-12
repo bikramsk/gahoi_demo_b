@@ -6,54 +6,25 @@
   },
   "options": {},
   "attributes": {
-    "industrySector": {
-      "type": "enumeration",
-      "enum": [
-        "",
-        "Agriculture & Allied Activities",
-        "Manufacturing",
-        "Construction & Real Estate",
-        "Trade & Commerce",
-        "Transportation & Logistics",
-        "Information Technology & Services",
-        "Financial Services",
-        "Healthcare & Pharmaceuticals",
-        "Education & Training",
-        "Professional Services",
-        "Hospitality & Tourism",
-        "Media & Entertainment",
-        "Textile & Apparel",
-        "Mining & Minerals",
-        "Power & Energy",
-        "Other Services"
-      ],
-      "required": true
-    },
     "businessSize": {
       "type": "enumeration",
       "enum": [
         "",
-        "Micro Enterprise",
-        "Small Enterprise",
-        "Medium Enterprise",
-        "Large Enterprise",
+        "Self Business",
+        "Micro Business",
+        "Small Business",
+        "Medium Business",
+        "Large Business",
         "Self Employed/Freelancer",
         "Not Applicable"
-      ],
-      "required": true
+      ]
     },
     "workType": {
       "type": "enumeration",
       "enum": [
         "",
         "Business Owner",
-        "Professional",
-        "Skilled Worker",
-        "Government Service",
-        "Private Sector Employee",
-        "Freelancer/Consultant",
-        "Retired",
-        "Other"
+        "Professional/Employee"
       ],
       "required": true
     },
@@ -63,12 +34,8 @@
         "",
         "Central Government Employee",
         "State Government Employee",
-        "Private Sector Employee",
-        "Business Owner",
-        "Self-employed",
-        "Not Currently Employed"
-      ],
-      "required": true
+        "Private Sector Employee"
+      ]
     },
     "businessType": {
       "type": "enumeration",
@@ -78,7 +45,7 @@
         "Partnership",
         "Private Limited Company",
         "Public Limited Company",
-        "Limited Liability Partnership (LLP)",
+        "Limited Liability Partnership",
         "Other"
       ]
     },
@@ -90,7 +57,7 @@
         "3-5 years",
         "6-10 years",
         "11-20 years",
-        "More than 20 years"
+        "20+ years"
       ]
     }
   }
